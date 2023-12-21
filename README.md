@@ -9,6 +9,17 @@ Implementation of splitting text that looks at characters.
 
 Recursively tries to split by different characters to find one that works.
 
+It also has the option for overlaping text between chunks.
+
+The reason we are using it is that the context window of LLMs is limited. So we need to split the text into chunks.
+
+#### SentenceSplitter
+Sentence splitter that uses a neural network to predict sentence boundaries.
+#### Embeddings
+Embeddings are a way to represent words as vectors. The idea is that words that are similar will have similar vectors. This is useful for many tasks in NLP, for example, finding synonyms, or in our case, finding similar words to the ones in the resume.
+
+#### FAISS
+FAISS is a library for efficient similarity search and clustering of dense vectors. It contains algorithms that search in sets of vectors of any size, up to ones that possibly do not fit in RAM. It also contains supporting code for evaluation and parameter tuning. FAISS is written in C++ with complete wrappers for Python/numpy. Some of the most useful algorithms are implemented on the GPU. It is developed by Facebook AI Research. 
 ## Instalation
 #### creating environment
 conda create -n "environment_name"
