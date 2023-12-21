@@ -3,6 +3,8 @@ from PyPDF2 import PdfReader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import FAISS
+import pickle
+import os
 
 # Header
 st.header("Improve your resume and get x2 more interviews! ")
@@ -45,8 +47,25 @@ if pdf is not None:
     embedder = OpenAIEmbeddings()
     embeddings = embedder.embed_text(chunks)
 
+    #check if the pdf is already in the database
+
+    #selecting the name of the pdf without ".pdf"
+    pdf_name = pdf.name[:-4]
+
+    if(pdf_name in os.path("vector_database"))
+
+    #create vector store
     vectorStore = FAISS.from_texts(chunks, embedding=embeddings)
-    st.write(chunks)
+    # check if the pdf is already in the database 
+    with open(f"vector_database/{pdf_name}.pkl","wb") as f:
+        pickle.dump(embeddings,f)
+
+
+    #get most similar chunks
+    query = "I am a software engineer"
+    query_embedding = embedder.embed_text(query)
+    results = vectorStore.most_similar(query_embedding, 5)
+
 
 
 
