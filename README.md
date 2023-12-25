@@ -23,7 +23,7 @@ FAISS is a library for efficient similarity search and clustering of dense vecto
 
 ## III - Usage
 
-### III-1 Instalation
+### III-1 Installation
 #### creating environment
 conda create -n "environment_name"
 #### activating environment
