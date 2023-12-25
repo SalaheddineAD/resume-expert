@@ -4,7 +4,10 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import FAISS
 import pickle
+from dotenv import load_dotenv
 import os
+
+
 
 # Header
 st.header("Improve your resume and get x2 more interviews! ")
@@ -25,8 +28,16 @@ with st.sidebar:
         """
     )
 
+# loading the variables of the .env file
+load_dotenv(dotenv_path=".", verbose=True)
+
+#Initialize embeddings
+embeddings = OpenAIEmbeddings()
+
 # When user uploads pdf 
 if pdf is not None:
+    
+
     #red pdf
     pdf_reader = PdfReader(pdf)
 
@@ -38,38 +49,33 @@ if pdf is not None:
 
     #split text
     splitter = RecursiveCharacterTextSplitter(
-        chunk_size = 1000,
-        max_splits=10
+        chunk_size=1000,
+        chunk_overlap=200
     )
     chunks = splitter.split_text(text)
-
-    #embed chunks
-    embedder = OpenAIEmbeddings()
-    embeddings = embedder.embed_text(chunks)
-
-    #check if the pdf is already in the database
 
     #selecting the name of the pdf without ".pdf"
     pdf_name = pdf.name[:-4]
 
-    if(pdf_name in os.path("vector_database"))
-
-    #create vector store
-    vectorStore = FAISS.from_texts(chunks, embedding=embeddings)
-    # check if the pdf is already in the database 
-    with open(f"vector_database/{pdf_name}.pkl","wb") as f:
-        pickle.dump(embeddings,f)
-
-
-    #get most similar chunks
-    query = "I am a software engineer"
-    query_embedding = embedder.embed_text(query)
-    results = vectorStore.most_similar(query_embedding, 5)
-
+    #check if the pdf is already in the database
+    if os.path.exists(f"vector_database/{pdf_name}"):
+        with open(f"vector_database/{pdf_name}.pkl","rb") as f:
+            vectorStore = pickle.load(f)
+    else:
+        #create vector store
+        vectorStore = FAISS.from_texts(chunks, embedding=embeddings)
+        #create vector store
+        with open(f"vector_database/{pdf_name}.pkl","wb") as f:
+            pickle.dump(vectorStore,f)
 
 
 
 def main():
+    try:
+        import openai
+        print("OpenAI package is installed.")
+    except ImportError:
+        print("OpenAI package is not installed.")
     st.write("hello")
 
 if __name__ == "__main__":
