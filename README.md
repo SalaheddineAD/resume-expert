@@ -33,6 +33,8 @@ pip install -r requirements.txt
 
 comment:: If you have a problem with installing streamlit check the library altair in requirements.txt
 
+If problem with langchain the run $ pip install langchain openai --upgrade
+
 ### III-2 running the streamlit app
 #### activating environment
 conda activate "environment_name"

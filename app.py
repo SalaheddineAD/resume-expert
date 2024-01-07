@@ -3,10 +3,8 @@ from PyPDF2 import PdfReader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import FAISS
-import pickle
 from dotenv import load_dotenv
 import os
-
 
 
 # Header
@@ -28,11 +26,7 @@ with st.sidebar:
         """
     )
 
-# loading the variables of the .env file
-load_dotenv(dotenv_path=".", verbose=True)
 
-#Initialize embeddings
-embeddings = OpenAIEmbeddings()
 
 # When user uploads pdf 
 if pdf is not None:
@@ -45,7 +39,7 @@ if pdf is not None:
     text = ""
     for page in pdf_reader.pages:
         text += page.extract_text()
-    st.write(text)
+    # st.write(text)
 
     #split text
     splitter = RecursiveCharacterTextSplitter(
@@ -57,26 +51,27 @@ if pdf is not None:
     #selecting the name of the pdf without ".pdf"
     pdf_name = pdf.name[:-4]
 
+    # loading the variables of the .env file
+    load_dotenv(dotenv_path=".", verbose=True)
+    #Initialize embeddings
+    embeddings = OpenAIEmbeddings(openai_api_key="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")
+
     #check if the pdf is already in the database
-    if os.path.exists(f"vector_database/{pdf_name}"):
-        with open(f"vector_database/{pdf_name}.pkl","rb") as f:
-            vectorStore = pickle.load(f)
+    if os.path.exists(f"{pdf_name}"):
+        FAISS.load_local(f"vecor_db/{pdf_name}", embeddings)
     else:
         #create vector store
         vectorStore = FAISS.from_texts(chunks, embedding=embeddings)
         #create vector store
-        with open(f"vector_database/{pdf_name}.pkl","wb") as f:
-            pickle.dump(vectorStore,f)
+        vectorStore.save_local(f"vector_db/{pdf_name}")
+    
+    query = st.text_input("Ask a question about your pdf")
+    st.write(query)
 
 
 
 def main():
-    try:
-        import openai
-        print("OpenAI package is installed.")
-    except ImportError:
-        print("OpenAI package is not installed.")
-    st.write("hello")
+    pass
 
 if __name__ == "__main__":
     main()
