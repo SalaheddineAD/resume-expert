@@ -52,9 +52,11 @@ if pdf is not None:
     pdf_name = pdf.name[:-4]
 
     # loading the variables of the .env file
-    load_dotenv(dotenv_path=".", verbose=True)
-    #Initialize embeddings
-    embeddings = OpenAIEmbeddings(openai_api_key="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")
+    load_dotenv()
+    OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+
+    # Initialize embeddings
+    embeddings = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY)
 
     #check if the pdf is already in the database
     if os.path.exists(f"{pdf_name}"):
@@ -67,6 +69,9 @@ if pdf is not None:
     
     query = st.text_input("Ask a question about your pdf")
     st.write(query)
+    if query:
+        docs= vectorStore.similarity_search(query=query, k=3)
+        st.write(docs)
 
 
 
